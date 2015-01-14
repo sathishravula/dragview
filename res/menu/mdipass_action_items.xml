@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/clone"
+          android:title="clone"
+          android:showAsAction="always">
+    </item>
+ <item android:id="@+id/flip"
+          android:title="flip"
+          android:showAsAction="always">
+    </item>
+ <item android:id="@+id/remove"
+          android:title="remove"
+          android:showAsAction="always">
+    </item>
+
+
+</menu>

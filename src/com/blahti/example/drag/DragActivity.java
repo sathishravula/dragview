@@ -1,5 +1,7 @@
 package com.blahti.example.drag;
 
+import android.graphics.Bitmap;
+import android.view.*;
 import com.blahti.example.drag.R;
 
 import android.app.Activity;
@@ -8,10 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -40,8 +38,9 @@ private boolean mLongClickStartsDrag = true;    // If true, it takes a long clic
 private static final int CHANGE_TOUCH_MODE_MENU_ID = Menu.FIRST;
 
 public static final boolean Debugging = false;
+  private View v;
 
-/**
+  /**
  * onCreate - called when the activity is first created.
  * 
  * Creates a drag controller and sets up three views so click and long click on the views are sent to this activity.
@@ -53,7 +52,6 @@ public static final boolean Debugging = false;
 {
     super.onCreate(savedInstanceState);
     mDragController = new DragController(this);
-
     setContentView(R.layout.main);
     setupViews ();
 }
@@ -65,11 +63,56 @@ public static final boolean Debugging = false;
 
 public boolean onCreateOptionsMenu (Menu menu) 
 {
-    super.onCreateOptionsMenu(menu);
+   /* super.onCreateOptionsMenu(menu);
     
     menu.add (0, CHANGE_TOUCH_MODE_MENU_ID, 0, "Change Touch Mode");
-    return true;
+    return true;*/
+  MenuInflater menuInflater = getMenuInflater();
+  menuInflater.inflate(R.menu.mdipass_action_items, menu);
+  return super.onCreateOptionsMenu(menu);
 }
+
+
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.clone:
+        getClone(v);
+        break;
+      case R.id.flip:
+        flipView(v);
+        break;
+      case R.id.remove:
+        removeImage(v);
+        /*
+       mLongClickStartsDrag = !mLongClickStartsDrag;
+        String message = mLongClickStartsDrag ? "Changed touch mode. Drag now starts on long touch (click)."
+            : "Changed touch mode. Drag now starts on touch (click).";
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        return true;
+*/
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  private void getClone(View v) {
+    v.buildDrawingCache();
+    Bitmap cacheBitmap = v.getDrawingCache();
+    Log.d("test", "bitmap:" + cacheBitmap);
+    Bitmap bmp2 = cacheBitmap.copy(cacheBitmap.getConfig(), true);
+    ImageView i4 = new ImageView(getApplicationContext());
+    i4.setImageBitmap(bmp2);
+    mDragLayer.addView(i4);
+    i4.setOnClickListener(this);
+//    i4.setOnLongClickListener(this);
+    i4.setOnTouchListener(this);
+  }
+  private void removeImage(View v) {
+    mDragLayer.removeView(v);
+  }
+
+  private void flipView(View v) {
+    v.setRotation(90);
+  }
 
 /**
  * Handle a click on a view. Tell the user to use a long click (press).
@@ -78,6 +121,7 @@ public boolean onCreateOptionsMenu (Menu menu)
 
 public void onClick(View v) 
 {
+  this.v = v;
     if (mLongClickStartsDrag) {
        // Tell the user that it takes a long click to start dragging.
        toast ("Press and hold to drag an image.");
@@ -129,7 +173,8 @@ public boolean onLongClick(View v)
  *
  */
 
-public boolean onOptionsItemSelected (MenuItem item) 
+/*
+public boolean onOptionsItemSelected (MenuItem item)
 {
     switch (item.getItemId()) {
       case CHANGE_TOUCH_MODE_MENU_ID:
@@ -141,6 +186,7 @@ public boolean onOptionsItemSelected (MenuItem item)
     }
     return super.onOptionsItemSelected (item);
 }
+*/
 
 /**
  * Resume the activity.
